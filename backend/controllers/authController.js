@@ -1,6 +1,6 @@
-import { hashPassword, comparePassword } from '../services/hashService';
-import { generateToken } from '../services/jwtService';
-import User from '../models/user.model';
+import { hashPassword, comparePassword } from '../services/hashService.js';
+import { generateToken } from '../services/jwtService.js';
+import User from '../models/user.model.js';
 
 //Register:
 export const register = async (req, res) => {
@@ -32,7 +32,7 @@ export const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
 
-    const isMatch = await comparePassword(password, user.password);
+    const isMatch = await comparePassword(password, user.passwordHash);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid email or password" });
 
@@ -46,9 +46,16 @@ export const login = async (req, res) => {
 }
 
 // Protected profile route
-exports.profile = (req, res) => {
+export const profile = (req, res) => {
   res.json({
     message: "Welcome to your profile!",
     user: req.user,
   });
+};
+
+
+export default {
+  register,
+  login,
+  profile,
 };

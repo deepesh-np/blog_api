@@ -1,21 +1,24 @@
+import { verifyToken } from "../services/jwtService.js";
 
-const { verifyToken } = require("../services/jwtService");
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-// Middleware to protect routes
-module.exports = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader)
+  if (!authHeader) {
     return res.status(401).json({ message: "No token provided" });
+  }
 
   const token = authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Malformed token" });
+  if (!token) {
+    return res.status(401).json({ message: "Malformed token" });
+  }
 
   try {
     const decoded = verifyToken(token);
-
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: "Invalid or expired token" });
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+
+export default authMiddleware;

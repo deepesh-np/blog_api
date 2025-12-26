@@ -1,3 +1,4 @@
+import authRoutes from "./routes/auth.js";
 import express from 'express';
 
 import dotenv from "dotenv";
@@ -8,6 +9,16 @@ connectDB();
 
 const app = express();
 const port = process.env.port;
+
+
+//Middleware to parse JSON request bodies
+app.use(express.json());
+
+//Mount auth routes
+// All auth-related routes will start with /api/auth
+app.use("/api/auth", authRoutes);
+
+
 
 app.get('/',(req,res) => {
     res.send("Hello World!")
