@@ -5,11 +5,11 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 //  Register
-// Users send their name, email, and password to this endpoint
+// req me ye bhejna- user name, username, email, and password to this endpoint
 router.post("/register", authController.register);
 
 // Login
-// Users send email and password to receive JWT
+// req me ye bhejna- Users send email and password to receive JWT
 router.post("/login", authController.login);
 
 // Protected profile
