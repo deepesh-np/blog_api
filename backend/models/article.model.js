@@ -8,6 +8,13 @@ const articleSchema = new mongoose.Schema(
       trim: true,
     },
 
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+
     bodyMarkdown: {
       type: String,
       required: true,
@@ -17,6 +24,13 @@ const articleSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
+    },
+
+    isPublished: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
 
     likes: [
@@ -25,6 +39,11 @@ const articleSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+
+    likesCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
