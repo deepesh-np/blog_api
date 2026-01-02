@@ -1,4 +1,5 @@
 import authRoutes from "./routes/auth.js";
+import articleRoutes from './routes/articleRoutes.js'
 import express from 'express';
 
 import dotenv from "dotenv";
@@ -18,7 +19,7 @@ app.use(express.json());
 // All auth-related routes will start with /api/auth
 app.use("/api/auth", authRoutes);
 
-
+app.use("/api/article", articleRoutes );
 
 app.get('/',(req,res) => {
     res.send("Hello World!")

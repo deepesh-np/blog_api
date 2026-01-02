@@ -1,0 +1,20 @@
+import express from "express"
+import articleController from "../controllers/articleController.js"
+// import authorize from "../middlewares/authorizeMiddlewaare.js"
+import auth from '../middlewares/authMiddleware.js'
+
+const router = express.Router();
+
+//create new article
+router.post(
+  "/new-blog",
+  auth,
+  articleController.createArticle
+);
+
+//get all article
+//get article by id
+//delete article by id 
+//edit article by id 
+
+export default router;

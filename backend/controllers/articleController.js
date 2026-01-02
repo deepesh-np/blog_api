@@ -1,4 +1,3 @@
-import authMiddleware from '../middlewares/authMiddleware.js';
 import Article from '../models/article.model.js';
 import { generateUniqueSlug } from "../services/slugService.js";
 
@@ -7,7 +6,7 @@ export const createArticle = async (req, res) => {
 
   const slug = await generateUniqueSlug(title);
 
-  const article = authMiddleware, await Article.create({
+  const article =  await Article.create({
     title,
     slug,
     bodyMarkdown,
@@ -16,3 +15,7 @@ export const createArticle = async (req, res) => {
 
   res.status(201).json(article);
 };
+
+export default {
+  createArticle
+}
