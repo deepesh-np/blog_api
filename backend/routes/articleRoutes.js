@@ -20,6 +20,12 @@ router.get(
 
 
 //get article by id
+router.get(
+  "/:slug",
+  articleController.getArticlesById
+)
+
+
 //delete article by id 
 //edit article by id 
 
