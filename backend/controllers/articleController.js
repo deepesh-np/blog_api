@@ -16,6 +16,20 @@ export const createArticle = async (req, res) => {
   res.status(201).json(article);
 };
 
+export const getAllArticles = async (req, res) => {
+  try {
+    const articles = await Article.find()
+      .sort({ createdAt: -1 }) 
+      .select("title slug createdAt author"); 
+
+    res.status(200).json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch articles" });
+  }
+};
+
+
 export default {
-  createArticle
+  createArticle,
+  getAllArticles
 }

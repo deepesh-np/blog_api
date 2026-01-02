@@ -13,6 +13,12 @@ router.post(
 );
 
 //get all article
+router.get(
+  "/all-blogs",
+  articleController.getAllArticles
+)
+
+
 //get article by id
 //delete article by id 
 //edit article by id 
