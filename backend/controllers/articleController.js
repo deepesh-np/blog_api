@@ -65,11 +65,46 @@ export const deleteArticleBySlug = async (req, res) => {
   }
 }
 
+export const editArticleBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const { title, bodyMarkdown, isPublished } = req.body;
+
+    const article = await Article.findOne({ slug });
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    if (title) article.title = title;
+    if (bodyMarkdown) article.bodyMarkdown = bodyMarkdown;
+    if (typeof isPublished === "boolean") {
+      article.isPublished = isPublished;
+    }
+
+    // if (title) {
+    //   article.slug = title
+    //     .toLowerCase()
+    //     .trim()
+    //     .replace(/[^a-z0-9]+/g, "-");
+    // }
+
+    await article.save();
+
+    res.status(200).json({
+      message: "Article updated successfully",
+      article,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update article" });
+  }
+};
+
 
 
 export default {
   createArticle,
   getAllArticles,
   getArticlesBySlug,
-  deleteArticleBySlug
+  deleteArticleBySlug,
+  editArticleBySlug
 }

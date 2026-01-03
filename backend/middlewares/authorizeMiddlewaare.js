@@ -2,7 +2,7 @@ import Article from '../models/article.model.js'
 
 export const isOwner = async(req, res, next) => {
 try {
-    const slug = req.params;
+    const {slug} = req.params;
     const article = await Article.findOne({slug})
 
     if (!article) {
@@ -14,6 +14,8 @@ try {
     }
      next();
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ message: "Authorization failed" });
   }
 }
