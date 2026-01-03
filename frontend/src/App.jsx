@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar.jsx";
@@ -24,5 +23,3 @@ const App = () => {
 };
 
 export default App;
-=======
->>>>>>> 1f55c22d03425dc1ec5d64844837a04f43b91a6b
