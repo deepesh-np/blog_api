@@ -45,14 +45,14 @@ router.put(
 export default router;
 
 
-// POST    /new-blog
-// GET     /all-blogs
+// POST    /new-blog  -d
+// GET     /all-blogs -d
 // GET     /published
 // GET     /my-blogs
 
-// GET     /slug/:slug
-// PUT     /slug/:slug
-// DELETE  /slug/:slug
+// GET     /slug/:slug -d
+// PUT     /slug/:slug -d
+// DELETE  /slug/:slug -d
 
 // PATCH   /slug/:slug/publish
 // POST    /slug/:slug/like
