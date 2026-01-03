@@ -1,6 +1,6 @@
 import express from "express"
 import articleController from "../controllers/articleController.js"
-// import authorize from "../middlewares/authorizeMiddlewaare.js"
+import authorize from "../middlewares/authorizeMiddlewaare.js"
 import auth from '../middlewares/authMiddleware.js'
 
 const router = express.Router();
@@ -22,11 +22,18 @@ router.get(
 //get article by id
 router.get(
   "/:slug",
-  articleController.getArticlesById
+  articleController.getArticlesBySlug
 )
 
-
+//auth guards routess!!!!b  --ye sb me authorize lga hua h..
 //delete article by id 
+router.delete(
+  "/:slug",
+  auth,
+  authorize.isOwner,
+  articleController.deleteArticleBySlug
+)
+
 //edit article by id 
 
 export default router;

@@ -28,7 +28,7 @@ export const getAllArticles = async (req, res) => {
 };
 
 
-export const getArticlesById = async (req, res) => {
+export const getArticlesBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const article = await Article.findOne({ slug })
@@ -43,9 +43,33 @@ export const getArticlesById = async (req, res) => {
   }
 };
 
+//Auth guard routess!!!
+
+export const deleteArticleBySlug = async (req, res) => {
+  try{
+    const {slug} = req.params;
+    const article = await Article.findOneAndDelete({slug})
+
+    if (!article){
+    return res.status(404).json({ message: "Article not found" });
+  }
+
+  res.status(200).json({
+      message: "Article deleted successfully",
+      deletedSlug: slug,
+    });
+    
+  }
+  catch(err){
+    res.status(500).json({ message: "Failed to delete articles" });
+  }
+}
+
+
 
 export default {
   createArticle,
   getAllArticles,
-  getArticlesById
+  getArticlesBySlug,
+  deleteArticleBySlug
 }
