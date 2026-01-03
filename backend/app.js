@@ -1,6 +1,7 @@
 import authRoutes from "./routes/auth.js";
 import articleRoutes from './routes/articleRoutes.js'
 import express from 'express';
+import cors from "cors";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -11,6 +12,10 @@ connectDB();
 const app = express();
 const port = process.env.port;
 
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true
+}));
 
 //Middleware to parse JSON request bodies
 app.use(express.json());
