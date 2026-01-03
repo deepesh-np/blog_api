@@ -42,20 +42,57 @@ router.put(
   articleController.editArticleBySlug
 )
 
+router.get(
+  "/published",
+  articleController.getPublishedArticles
+);
+
+router.get(
+  "/my-blogs",
+  auth,
+  authorize.isOwner,
+  articleController.getMyArticles
+);
+
+
+router.patch(
+  "/slug/:slug/publish",
+  auth,
+  authorize.isOwner,
+  articleController.togglePublish
+);
+
+router.post(
+  "/slug/:slug/like",
+  auth,
+  articleController.likeArticle
+);
+
+router.post(
+  "/slug/:slug/view",
+  articleController.incrementViews
+);
+
+router.get(
+  "/search",
+  articleController.searchArticles
+);
+
+
 export default router;
 
 
 // POST    /new-blog  -d
 // GET     /all-blogs -d
-// GET     /published
-// GET     /my-blogs
+// GET     /published -d
+// GET     /my-blogs  -d
 
 // GET     /slug/:slug -d
 // PUT     /slug/:slug -d
 // DELETE  /slug/:slug -d
 
-// PATCH   /slug/:slug/publish
-// POST    /slug/:slug/like
-// POST    /slug/:slug/view
-
-// GET     /search
+// PATCH   /slug/:slug/publish -d
+// POST    /slug/:slug/like    -d
+// POST    /slug/:slug/view    -d
+ 
+// GET     /search  -d

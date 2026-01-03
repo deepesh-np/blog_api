@@ -99,6 +99,117 @@ export const editArticleBySlug = async (req, res) => {
   }
 };
 
+export const getPublishedArticles = async (req, res) => {
+  try {
+    const articles = await Article.find({ isPublished: true })
+      .sort({ createdAt: -1 })
+      .select("title slug author createdAt likesCount");
+
+    res.status(200).json(articles);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch published articles" });
+  }
+};
+
+export const getMyArticles = async (req, res) => {
+  try {
+    const articles = await Article.find({ author: req.user.id })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(articles);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch your articles" });
+  }
+};
+
+export const togglePublish = async (req, res) => {
+  try {
+    const article = req.article; 
+
+    article.isPublished = !article.isPublished;
+    await article.save();
+
+    res.json({
+      message: "Publish status updated",
+      isPublished: article.isPublished,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update publish status" });
+  }
+};
+
+
+export const likeArticle = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const userId = req.user.id;
+
+    const article = await Article.findOne({ slug });
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    const index = article.likes.indexOf(userId);
+
+    if (index === -1) {
+      article.likes.push(userId);
+      article.likesCount++;
+    } else {
+      article.likes.splice(index, 1);
+      article.likesCount--;
+    }
+
+    await article.save();
+
+    res.json({
+      likesCount: article.likesCount,
+      liked: index === -1,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to like article" });
+  }
+};
+
+
+export const incrementViews = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    await Article.findOneAndUpdate(
+      { slug },
+      { $inc: { views: 1 } }
+    );
+
+    res.sendStatus(204); // no content, fire-and-forget
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update views" });
+  }
+};
+
+export const searchArticles = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    const articles = await Article.find({
+      isPublished: true,
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { bodyMarkdown: { $regex: q, $options: "i" } },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .select("title slug author createdAt likesCount");
+
+    res.json(articles);
+  } catch (err) {
+    res.status(500).json({ message: "Search failed" });
+  }
+};
+
 
 
 export default {
@@ -106,5 +217,11 @@ export default {
   getAllArticles,
   getArticlesBySlug,
   deleteArticleBySlug,
-  editArticleBySlug
+  editArticleBySlug,
+  getPublishedArticles,
+  getMyArticles,
+  togglePublish,
+  likeArticle,
+  incrementViews,
+  searchArticles
 }
