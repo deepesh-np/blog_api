@@ -38,11 +38,11 @@ export const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ message: 'Invalid email or password' });
 
-    if (!user.isVerified) {
-      return res.status(403).json({
-        message: 'Verify your email before logging in',
-      });
-    }
+    // if (!user.isVerified) {
+    //   return res.status(403).json({
+    //     message: 'Verify your email before logging in',
+    //   });
+    // }
 
     const isMatch = await comparePassword(password, user.passwordHash);
     if (!isMatch)
@@ -53,8 +53,13 @@ export const login = async (req, res) => {
       email: user.email,
       role: user.role,
     });
-
-    res.json({ message: 'Login successful!', token });
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+      })
+      .json({ message: 'Login successful' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
