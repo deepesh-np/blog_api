@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { Heart } from "lucide-react";
+import { Heart,Loader2 } from "lucide-react";
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -25,7 +25,7 @@ const Home = () => {
     fetchArticles();
   }, []);
 
-  if (loading) return <p className="text-center text-gray-300 mt-10">Loading…</p>;
+  if (loading) return <p className="text-center text-gray-300 mt-10"><Loader2 className="animate-spin mx-auto" size={36} /></p>;
   if (error) return <p className="text-center text-red-400 mt-10">{error}</p>;
 
   return (
