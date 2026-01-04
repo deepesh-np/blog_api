@@ -99,9 +99,22 @@ export const verifyOtp = async (req, res) => {
   return res.json({ message: 'Account verified successfully' });
 };
 
+export const logout = (req, res) => {
+  res
+    .clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    })
+    .status(200)
+    .json({ message: 'Logged out successfully' });
+};
+
+
 export default {
   register,
   login,
   profile,
   verifyOtp,
+  logout
 };

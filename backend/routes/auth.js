@@ -16,4 +16,6 @@ router.post("/login", authController.login);
 // Only accessible to authenticated users with a valid JWT
 router.get("/profile", authMiddleware, authController.profile);
 
+router.post('/logout', authController.logout);
+
 export default router;
