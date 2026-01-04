@@ -1,17 +1,29 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import axios from 'axios';
-const [email, setEmail] = React.useState('');
-const [password, setPassword] = React.useState('');
-const [error, setError] = React.useState('');
-const [loading, setLoading] = React.useState(false);
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
-  try {
-    const res = await axios
+import api from '../api/axios'; 
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      navigate('/profile');
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-6">
       <div className="w-full max-w-sm rounded-xl bg-gray-800 p-8 shadow-lg">
@@ -32,7 +44,7 @@ const Login = () => {
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-5">
+        <form className="mt-8 space-y-5" onSubmit={(e) => handleSubmit(e)}>
           {/* Email */}
           <div>
             <label
@@ -78,12 +90,18 @@ const Login = () => {
               placeholder="••••••••"
             />
           </div>
+          {error && (
+            <div className="text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+
 
           {/* Button */}
           <button
             type="submit"
             className="w-full rounded-md bg-indigo-500 py-2.5 font-semibold text-white hover:bg-indigo-400 active:bg-indigo-600 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-
+           
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -102,5 +120,5 @@ const Login = () => {
     </div>
   )
 }
-  
+
 export default Login
