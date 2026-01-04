@@ -87,7 +87,7 @@ const Home = () => {
 
                 <div className="text-sm">
                   <p className="font-semibold text-white">
-                    {article?.author?.name || "Unknown author"}
+                    {article?.author?.username || "Unknown author"}
                   </p>
 
                   <p className="text-gray-400">
