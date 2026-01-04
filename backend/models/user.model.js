@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+/** @format */
+
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
@@ -40,27 +42,33 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ['user', 'admin'],
+      default: 'user',
     },
 
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
 
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    otpHash: String,
+    otpExpiresAt: Date,
   },
   { timestamps: true }
 );
-
 
 // // Pre-save middleware for hashing password
 // userSchema.pre('save', async function (next) {
@@ -69,4 +77,4 @@ const userSchema = new mongoose.Schema(
 //   next();
 // });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model('User', userSchema);
