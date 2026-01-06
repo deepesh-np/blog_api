@@ -7,6 +7,7 @@ import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Publish from "./Pages/Publish.jsx";
 
+
 const App = () => {
   return (
     <div>
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/publish" element={<Publish />} />
+        
       </Routes>
     </div>
   );

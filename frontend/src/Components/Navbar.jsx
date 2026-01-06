@@ -1,18 +1,49 @@
+/** @format */
+
 import { NavLink } from "react-router-dom";
-import { Bell, User, LogOut, PenLine, Home } from "lucide-react";
+import { Bell, User, PenLine, Home, Search } from "lucide-react";
+import React from "react";
+import api from "../api/axios";
 
 const navLinkClasses =
   "text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2";
 
 export default function Navbar() {
+  const [query, setQuery] = React.useState("");
+  const [results, setResults] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  const debounceRef = React.useRef(null);
+
+  const handleSearch = (value) => {
+    setQuery(value);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    debounceRef.current = setTimeout(async () => {
+      if (!value.trim()) return setResults([]);
+
+      try {
+        setLoading(true);
+
+        // 👉 change endpoint as needed
+        const res = await api.get(`/search?q=${query}`);
+
+        setResults(res.data || []);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-
           {/* Left — Logo + Nav */}
           <div className="flex items-center gap-10">
-
             {/* Logo */}
             <div className="flex items-center gap-2">
               <span className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">
@@ -27,7 +58,9 @@ export default function Navbar() {
                 to="/"
                 className={({ isActive }) =>
                   `${navLinkClasses} ${
-                    isActive ? "text-indigo-600 border-b-2 border-indigo-600" : ""
+                    isActive
+                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      : ""
                   }`
                 }
               >
@@ -40,7 +73,9 @@ export default function Navbar() {
                 to="/publish"
                 className={({ isActive }) =>
                   `${navLinkClasses} ${
-                    isActive ? "text-indigo-600 border-b-2 border-indigo-600" : ""
+                    isActive
+                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      : ""
                   }`
                 }
               >
@@ -48,46 +83,52 @@ export default function Navbar() {
                   <PenLine size={16} /> Publish
                 </div>
               </NavLink>
-
-              <NavLink
-                to="/register"
-                className={({ isActive }) =>
-                  `${navLinkClasses} ${
-                    isActive ? "text-indigo-600 border-b-2 border-indigo-600" : ""
-                  }`
-                }
-              >
-                Registration
-              </NavLink>
-
-              <NavLink
-                to="/login"
-                className={({ isActive }) =>
-                  `${navLinkClasses} ${
-                    isActive ? "text-indigo-600 border-b-2 border-indigo-600" : ""
-                  }`
-                }
-              >
-                Login
-              </NavLink>
-
-              <NavLink
-                to="/logout"
-                className={navLinkClasses}
-              >
-                <div className="flex items-center gap-1">
-                  <LogOut size={16} /> Logout
-                </div>
-              </NavLink>
             </nav>
           </div>
 
-          {/* Right — notifications + profile */}
+          {/* Right — search + notifications + profile */}
           <div className="flex items-center gap-4">
+
+            {/* SEARCH BAR */}
+            <div className="relative w-64 hidden sm:block">
+              <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 shadow-sm focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition">
+                <Search size={16} className="text-gray-400" />
+
+                <input
+                  value={query}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Search…"
+                  className="w-full text-sm bg-transparent focus:outline-none"
+                />
+              </div>
+
+              {/* Results dropdown */}
+              {query && results.length > 0 && (
+                <div className="absolute z-20 mt-2 w-full rounded-xl border bg-white shadow divide-y">
+                  {results.map((item, i) => (
+                    <div
+                      key={i}
+                      className="px-4 py-2 text-sm hover:bg-gray-50"
+                    >
+                      {item.title || item.name || "Result"}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {loading && (
+                <div className="absolute z-20 mt-2 w-full text-xs text-gray-500 bg-white border rounded-xl px-3 py-2">
+                  Searching…
+                </div>
+              )}
+            </div>
+
+            {/* Notification */}
             <button className="rounded-full p-2 hover:bg-gray-100 text-gray-500">
               <Bell size={18} />
             </button>
 
+            {/* Profile */}
             <NavLink
               to="/profile"
               className="flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3"
@@ -98,6 +139,13 @@ export default function Navbar() {
               <span className="text-sm font-medium text-gray-700">
                 Profile
               </span>
+            </NavLink>
+
+            <NavLink
+              to="/login"
+              className="flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3"
+            >
+              Login || Register
             </NavLink>
           </div>
         </div>
