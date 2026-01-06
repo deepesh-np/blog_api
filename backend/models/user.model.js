@@ -38,6 +38,8 @@ const userSchema = new mongoose.Schema(
 
     avatarUrl: {
       type: String,
+      default:
+        'https://pfpzone.com/wp-content/uploads/2025/08/default-pfp-3.webp',
     },
 
     role: {

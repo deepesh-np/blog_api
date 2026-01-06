@@ -1,5 +1,6 @@
 import authRoutes from "./routes/auth.js";
 import articleRoutes from './routes/articleRoutes.js'
+import userprofileRoutes from './routes/userprofileRoutes.js'
 import express from 'express';
 import cors from "cors";
 
@@ -25,6 +26,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 app.use("/api/article", articleRoutes );
+
+app.use("/api/user", userprofileRoutes );
 
 app.get('/',(req,res) => {
     res.send("Hello World!")

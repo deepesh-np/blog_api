@@ -47,14 +47,6 @@ router.get(
   articleController.getPublishedArticles
 );
 
-router.get(
-  "/my-blogs",
-  auth,
-  authorize.isOwner,
-  articleController.getMyArticles
-);
-
-
 router.patch(
   "/slug/:slug/publish",
   auth,
