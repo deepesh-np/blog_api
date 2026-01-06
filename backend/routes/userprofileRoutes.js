@@ -6,20 +6,13 @@ import user from '../controllers/userController.js'
 
 const router = express.Router();
 
-router.get(
-  "/my-blogs",
-  auth,
-  authorize.isOwner,
-  articleController.getMyArticles
-);
-
 router.post(
     "/:user_id/avatar",
     auth,
-    authorize,
-    
+    authorize.isOwner,
+    user.updateAvatar
 )
 
-router.get("/:user_id/avatar", getAvatar);
+router.get("/:user_id/avatar", user.getAvatar);
 
 export default router;

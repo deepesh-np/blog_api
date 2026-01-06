@@ -1,6 +1,6 @@
 /** @format */
 
-import User from '../models/user.model';
+import User from '../models/user.model.js';
 
 export const updateAvatar = async (req, res) => {
   try {
@@ -50,3 +50,8 @@ export const getAvatar = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export default {
+    getAvatar,
+    updateAvatar,
+}
