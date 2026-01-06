@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { Heart,Loader2 } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -11,8 +11,6 @@ const Home = () => {
     const fetchArticles = async () => {
       try {
         const res = await api.get("/article/published");
-
-        // ensure always array
         setArticles(res.data || []);
       } catch (err) {
         console.error("Failed to fetch", err);
@@ -25,77 +23,92 @@ const Home = () => {
     fetchArticles();
   }, []);
 
-  if (loading) return <p className="text-center text-gray-300 mt-10"><Loader2 className="animate-spin mx-auto" size={36} /></p>;
-  if (error) return <p className="text-center text-red-400 mt-10">{error}</p>;
+  if (loading)
+    return (
+      <p className="text-center text-gray-500 mt-10">
+        <Loader2 className="animate-spin mx-auto" size={36} />
+      </p>
+    );
+
+  if (error)
+    return (
+      <p className="text-center text-red-500 mt-10">
+        {error}
+      </p>
+    );
 
   return (
-    <div className="bg-gray-900 py-24 sm:py-32 min-h-screen">
+    <div className="bg-white py-20 min-h-screen">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
         {/* heading */}
         <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+          <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Published Blogs
           </h2>
-          <p className="mt-2 text-lg text-gray-300">
+
+          <p className="mt-2 text-lg text-gray-600">
             Latest posts from our writers.
           </p>
         </div>
 
         {/* grid */}
-        <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 
-                        border-t border-gray-700 pt-10 sm:mt-16 sm:pt-16 
-                        lg:mx-0 lg:max-w-none lg:grid-cols-3">
-
+        <div
+          className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-x-10 gap-y-14 
+          border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 
+          lg:mx-0 lg:max-w-none lg:grid-cols-3"
+        >
           {articles.length === 0 && (
-            <p className="text-gray-300">No published articles yet.</p>
+            <p className="text-gray-600">No published articles yet.</p>
           )}
 
           {articles.map((article) => (
-            <article key={article.slug} className="flex max-w-xl flex-col">
-
+            <article
+              key={article.slug}
+              className="flex max-w-xl flex-col rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition p-6"
+            >
               {/* date + tag */}
               <div className="flex items-center gap-x-4 text-xs">
-                <time className="text-gray-400">
+                <time className="text-gray-500">
                   {article.createdAt
                     ? article.createdAt.slice(0, 10)
                     : "—"}
                 </time>
 
-                <span className="rounded-full bg-gray-800/60 px-3 py-1.5 text-gray-300">
+                <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700 font-medium">
                   Blog
                 </span>
               </div>
 
               {/* title + desc */}
               <div className="group relative grow">
-                <h3 className="mt-3 text-lg font-semibold text-white group-hover:text-gray-300">
+                <h3 className="mt-3 text-lg font-semibold text-gray-900 group-hover:text-indigo-700">
                   <a href={`/article/${article.slug}`}>
                     <span className="absolute inset-0" />
                     {article.title}
                   </a>
                 </h3>
 
-                <p className="mt-5 line-clamp-3 text-sm text-gray-400">
+                <p className="mt-4 line-clamp-3 text-sm text-gray-600">
                   {(article.bodyMarkdown || "").slice(0, 150)}…
                 </p>
               </div>
 
               {/* author + likes */}
               <div className="mt-8 flex items-center gap-x-4">
-                <div className="h-10 w-10 rounded-full bg-gray-800" />
+                <div className="h-10 w-10 rounded-full bg-gray-200" />
 
                 <div className="text-sm">
-                  <p className="font-semibold text-white">
+                  <p className="font-semibold text-gray-900">
                     {article?.author?.username || "Unknown author"}
                   </p>
 
-                  <p className="text-gray-400">
-                    <Heart className="inline mr-1" /> {article.likesCount ?? 0} likes
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <Heart className="h-4 w-4 text-pink-500" />
+                    {article.likesCount ?? 0} likes
                   </p>
                 </div>
               </div>
-
             </article>
           ))}
         </div>
