@@ -6,7 +6,7 @@ import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Publish from "./Pages/Publish.jsx";
-
+import Article from "./Pages/Article.jsx";
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/publish" element={<Publish />} />
-        
+        <Route path="/article/:slug" element={<Article />} />
       </Routes>
     </div>
   );

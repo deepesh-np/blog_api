@@ -186,27 +186,33 @@ export const incrementViews = async (req, res) => {
     res.status(500).json({ message: "Failed to update views" });
   }
 };
-
 export const searchArticles = async (req, res) => {
   try {
-    const { q } = req.query;
+    let { q, limit = 10 } = req.query;
 
-    if (!q) {
-      return res.status(400).json({ message: "Search query is required" });
+    if (!q || q.trim().length < 2) {
+      return res.status(400).json({ message: "Query too short" });
     }
 
-    const articles = await Article.find({
-      isPublished: true,
-      $or: [
-        { title: { $regex: q, $options: "i" } },
-        { bodyMarkdown: { $regex: q, $options: "i" } },
-      ],
-    })
+    q = q.trim();
+
+    const articles = await Article.find(
+      {
+        isPublished: true,
+        $or: [
+          { title: { $regex: q, $options: "i" } },
+          { bodyMarkdown: { $regex: q, $options: "i" } },
+        ],
+      },
+      "title slug author createdAt likesCount"
+    )
       .sort({ createdAt: -1 })
-      .select("title slug author createdAt likesCount");
+      .limit(Number(limit))
+      .populate("author", "name avatarUrl");
 
     res.json(articles);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Search failed" });
   }
 };
