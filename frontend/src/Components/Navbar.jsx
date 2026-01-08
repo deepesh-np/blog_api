@@ -51,12 +51,16 @@ export default function Navbar() {
           {/* Left — Logo + Nav */}
           <div className='flex items-center gap-10'>
             {/* Logo */}
+            <NavLink
+            to='/'
+                >
             <div className='flex items-center gap-2'>
               <span className='h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold'>
                 B
               </span>
               <span className='text-lg font-semibold'>Blog App</span>
             </div>
+            </NavLink>
 
             {/* Nav links */}
             <nav className='hidden md:flex items-center gap-2'>
