@@ -104,7 +104,7 @@ export const editArticleBySlug = async (req, res) => {
 export const getPublishedArticles = async (req, res) => {
   try {
     const articles = await Article.find({ isPublished: true })   
-      .populate("author", "username")         
+      .populate("author", "username avatarUrl")         
       .sort({ createdAt: -1 })
       .select("title subTitle slug author createdAt likesCount");
 
