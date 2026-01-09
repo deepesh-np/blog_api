@@ -18,6 +18,7 @@ export default function Navbar() {
   const [query, setQuery] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [userAvatar, setUserAvatar] = React.useState(null);
 
   const debounceRef = React.useRef(null);
 

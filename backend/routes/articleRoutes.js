@@ -50,7 +50,6 @@ router.get(
 router.get(
   "/my-blogs",
   auth,
-  authorize.isOwner,
   articleController.getMyArticles
 );
 

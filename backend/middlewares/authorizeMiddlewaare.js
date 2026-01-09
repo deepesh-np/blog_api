@@ -22,4 +22,20 @@ export const isOwner = async (req, res, next) => {
   }
 };
 
-export default { isOwner };
+export const isProfileOwner = async (req, res, next) => {
+  try {
+    const { user_id } = req.params;
+
+    // Check if the authenticated user is trying to modify their own profile
+    if (user_id !== req.user.id) {
+      return res.status(403).json({ message: "Access denied: You can only edit your own profile" });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Authorization failed" });
+  }
+};
+
+export default { isOwner, isProfileOwner };
