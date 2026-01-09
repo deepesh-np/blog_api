@@ -22,6 +22,26 @@ export default function Navbar() {
 
   const debounceRef = React.useRef(null);
 
+  // Fetch user avatar when authenticated
+  React.useEffect(() => {
+    const fetchUserAvatar = async () => {
+      if (isAuth) {
+        try {
+          const meResponse = await api.get('/auth/me');
+          const userId = meResponse.data.user.id;
+          const avatarResponse = await api.get(`/user/${userId}/avatar`);
+          setUserAvatar(avatarResponse.data.avatarUrl);
+        } catch (err) {
+          console.error('Failed to fetch user avatar', err);
+        }
+      } else {
+        setUserAvatar(null);
+      }
+    };
+
+    fetchUserAvatar();
+  }, [isAuth]);
+
   const handleLogout = async () => {
     try {
       await api.post('/auth/logout');
@@ -155,15 +175,28 @@ export default function Navbar() {
             </button>
 
             {/* Profile */}
-            {isAuth? (<NavLink
-              to='/profile'
-              className='flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3'>
-              <div className='h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center'>
-                <User className='text-white' size={18} />
-              </div>
-              <span className='text-sm font-medium text-gray-700'>Profile</span>
-            </NavLink>)
-            :('') }
+            {isAuth ? (
+              <NavLink
+                to='/profile'
+                className='flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3 hover:bg-gray-300 transition'>
+                {userAvatar ? (
+                  <img
+                    src={userAvatar}
+                    alt='Profile'
+                    className='h-8 w-8 rounded-full object-cover'
+                  />
+                ) : (
+                  <div className='h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center'>
+                    <User className='text-white' size={18} />
+                  </div>
+                )}
+                <span className='text-sm font-medium text-gray-700'>
+                  Profile
+                </span>
+              </NavLink>
+            ) : (
+              ''
+            )}
             
             {isAuth ? (
               <button
