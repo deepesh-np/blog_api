@@ -14,7 +14,7 @@ const navLinkClasses =
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { isAuth } = useAuth();
+  const { isAuth, checkAuth } = useAuth();
   const [query, setQuery] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -27,6 +27,7 @@ export default function Navbar() {
     } catch (err) {
       console.warn('Logout failed, forcing redirect');
     } finally {
+      await checkAuth();
       navigate('/logout');
     }
   };
@@ -153,15 +154,16 @@ export default function Navbar() {
             </button>
 
             {/* Profile */}
-            <NavLink
+            {isAuth? (<NavLink
               to='/profile'
               className='flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3'>
               <div className='h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center'>
                 <User className='text-white' size={18} />
               </div>
               <span className='text-sm font-medium text-gray-700'>Profile</span>
-            </NavLink>
-
+            </NavLink>)
+            :('') }
+            
             {isAuth ? (
               <button
                 onClick={handleLogout}
@@ -176,7 +178,7 @@ export default function Navbar() {
                   `flex gap-2 ${
                     isActive
                       ? 'text-indigo-500 font-semibold'
-                      : 'text-gray-300 hover:text-white'
+                      : 'text-gray-900 hover:text-gray-500'
                   }`
                 }>
                 <UserPlus size={18} />
