@@ -3,6 +3,8 @@ import articleRoutes from './routes/articleRoutes.js'
 import userprofileRoutes from './routes/userprofileRoutes.js'
 import express from 'express';
 import cors from "cors";
+import cookieParser from 'cookie-parser';
+
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -20,6 +22,7 @@ app.use(cors({
 
 //Middleware to parse JSON request bodies
 app.use(express.json());
+app.use(cookieParser());
 
 //Mount auth routes
 // All auth-related routes will start with /api/auth

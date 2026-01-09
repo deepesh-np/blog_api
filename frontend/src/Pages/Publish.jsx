@@ -38,9 +38,10 @@ ${body}
 
     setLoading(true);
     try {
-      const response = await api.post('/articles/new-blog', {
-        title,
-        bodyMarkdown: `## ${title}\n\n### ${subtitle}\n\n${body}`,
+      const response = await api.post('/article/new-blog', {
+        title: `${title}`,
+        subTitle: `${subtitle}`,
+        bodyMarkdown: `${body}`,
       });
 
       setMessage('Draft saved successfully!');
@@ -50,6 +51,7 @@ ${body}
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage(error.response?.data?.message || 'Failed to save draft');
+      console.log(error);
     } finally {
       setLoading(false);
     }

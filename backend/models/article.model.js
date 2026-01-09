@@ -8,6 +8,12 @@ const articleSchema = new mongoose.Schema(
       trim: true,
     },
 
+    subTitle: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     slug: {
       type: String,
       required: true,
@@ -17,7 +23,6 @@ const articleSchema = new mongoose.Schema(
 
     bodyMarkdown: {
       type: String,
-      required: true,
     },
 
     author: {
