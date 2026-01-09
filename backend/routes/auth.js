@@ -18,4 +18,14 @@ router.get("/profile", authMiddleware, authController.profile);
 
 router.post('/logout', authController.logout);
 
+router.get("/me", authMiddleware, (req, res) => {
+  res.json({
+    authenticated: true,
+    user: {
+      id: req.user.id,
+      name: req.user.name,
+    },
+  });
+});
+
 export default router;

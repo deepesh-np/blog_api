@@ -7,7 +7,8 @@ import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Publish from "./Pages/Publish.jsx";
 import Article from "./Pages/Article.jsx";
-import CreateArticle from "./Pages/CreateArticle.jsx"
+
+import ProtectedRoute from "./Components/ProtectedRoute.jsx"
 
 const App = () => {
   return (
@@ -18,9 +19,26 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/publish" element={<Publish />} />
         <Route path="/article/:slug" element={<Article />} />
+
+        <Route
+        path="/publish"
+        element={
+          <ProtectedRoute>
+            <Publish />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
       </Routes>
     </div>
   );

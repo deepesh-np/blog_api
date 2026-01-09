@@ -11,9 +11,9 @@ if (!token) {
   if (!token) {
     return res.status(401).json({ message: 'Malformed token' });
   }
-  if (!req.user.isVerified) {
-    return res.status(403).json({ message: 'Account not verified' });
-  }
+  // if (!req.user.isVerified) {
+  //   return res.status(403).json({ message: 'Account not verified' });
+  // }
 
   try {
     const decoded = verifyToken(token);

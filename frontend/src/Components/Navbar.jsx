@@ -1,19 +1,35 @@
 /** @format */
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { Bell, User, PenLine, Home, Search } from 'lucide-react';
+import { UserPlus, LogOut } from 'lucide-react';
 import React from 'react';
 import api from '../api/axios';
+
+import { useAuth } from '../hooks/useAuth';
 
 const navLinkClasses =
   'text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2';
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const { isAuth } = useAuth();
   const [query, setQuery] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
   const debounceRef = React.useRef(null);
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (err) {
+      console.warn('Logout failed, forcing redirect');
+    } finally {
+      navigate('/logout');
+    }
+  };
 
   const handleSearch = (value) => {
     setQuery(value);
@@ -51,15 +67,13 @@ export default function Navbar() {
           {/* Left — Logo + Nav */}
           <div className='flex items-center gap-10'>
             {/* Logo */}
-            <NavLink
-            to='/'
-                >
-            <div className='flex items-center gap-2'>
-              <span className='h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold'>
-                B
-              </span>
-              <span className='text-lg font-semibold'>Blog App</span>
-            </div>
+            <NavLink to='/'>
+              <div className='flex items-center gap-2'>
+                <span className='h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold'>
+                  B
+                </span>
+                <span className='text-lg font-semibold'>Blog App</span>
+              </div>
             </NavLink>
 
             {/* Nav links */}
@@ -78,19 +92,21 @@ export default function Navbar() {
                 </div>
               </NavLink>
 
-              <NavLink
-                to='/publish'
-                className={({ isActive }) =>
-                  `${navLinkClasses} ${
-                    isActive
-                      ? 'text-indigo-600 border-b-2 border-indigo-600'
-                      : ''
-                  }`
-                }>
-                <div className='flex items-center gap-1'>
-                  <PenLine size={16} /> Publish
-                </div>
-              </NavLink>
+              {isAuth && (
+                <NavLink
+                  to='/publish'
+                  className={({ isActive }) =>
+                    `${navLinkClasses} ${
+                      isActive
+                        ? 'text-indigo-600 border-b-2 border-indigo-600'
+                        : ''
+                    }`
+                  }>
+                  <div className='flex items-center gap-1'>
+                    <PenLine size={16} /> Publish
+                  </div>
+                </NavLink>
+              )}
             </nav>
           </div>
 
@@ -146,11 +162,27 @@ export default function Navbar() {
               <span className='text-sm font-medium text-gray-700'>Profile</span>
             </NavLink>
 
-            <NavLink
-              to='/login'
-              className='flex items-center gap-2 rounded-full bg-gray-200 p-1 pr-3'>
-              Login || Register
-            </NavLink>
+            {isAuth ? (
+              <button
+                onClick={handleLogout}
+                className='flex gap-2 text-red-400 hover:text-red-300'>
+                <LogOut size={18} />
+                Logout
+              </button>
+            ) : (
+              <NavLink
+                to='/register'
+                className={({ isActive }) =>
+                  `flex gap-2 ${
+                    isActive
+                      ? 'text-indigo-500 font-semibold'
+                      : 'text-gray-300 hover:text-white'
+                  }`
+                }>
+                <UserPlus size={18} />
+                Register
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
