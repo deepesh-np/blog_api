@@ -65,14 +65,15 @@ ${body}
 
     setLoading(true);
     try {
-      const draftResponse = await api.post('/articles/new-blog', {
-        title,
-        bodyMarkdown: `## ${title}\n\n### ${subtitle}\n\n${body}`,
+      const draftResponse = await api.post('/article/new-blog', {
+         title: `${title}`,
+        subTitle: `${subtitle}`,
+        bodyMarkdown: `${body}`,
       });
 
       const slug = draftResponse.data.slug;
 
-      await api.patch(`/articles/slug/${slug}/publish`);
+      await api.patch(`/article/slug/${slug}/publish`);
 
       setMessage('Article published successfully!');
       setTitle('');

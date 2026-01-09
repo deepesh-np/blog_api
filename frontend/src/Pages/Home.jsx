@@ -90,7 +90,7 @@ const Home = () => {
                 </h3>
 
                 <p className="mt-4 line-clamp-3 text-sm text-gray-600">
-                  {(article.bodyMarkdown || "").slice(0, 150)}…
+                  {(article.subTitle || "")}
                 </p>
               </div>
 

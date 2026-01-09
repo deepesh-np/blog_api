@@ -10,7 +10,6 @@ const articleSchema = new mongoose.Schema(
 
     subTitle: {
       type: String,
-      required: true,
       trim: true,
     },
 

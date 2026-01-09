@@ -105,7 +105,7 @@ export const getPublishedArticles = async (req, res) => {
     const articles = await Article.find({ isPublished: true })   
       .populate("author", "username")         
       .sort({ createdAt: -1 })
-      .select("title slug author createdAt likesCount");
+      .select("title subTitle slug author createdAt likesCount");
 
     res.status(200).json(articles);
   } catch (err) {
