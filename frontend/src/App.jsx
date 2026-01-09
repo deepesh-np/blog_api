@@ -7,6 +7,7 @@ import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Publish from "./Pages/Publish.jsx";
 import Article from "./Pages/Article.jsx";
+import NotFound from "./Pages/NotFound.jsx";
 
 import ProtectedRoute from "./Components/ProtectedRoute.jsx"
 
@@ -39,6 +40,7 @@ const App = () => {
         }
       />
 
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
