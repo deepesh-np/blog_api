@@ -7,6 +7,7 @@ import Register from "./Pages/Register.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Publish from "./Pages/Publish.jsx";
 import Article from "./Pages/Article.jsx";
+import CreateArticle from "./Pages/CreateArticle.jsx"
 
 const App = () => {
   return (
