@@ -33,6 +33,7 @@ export const getArticlesBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const article = await Article.findOne({ slug })
+    .populate('author')
 
     if (!article) {
     return res.status(404).json({ message: "Article not found" });
