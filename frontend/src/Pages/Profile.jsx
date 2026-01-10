@@ -1,86 +1,82 @@
 /** @format */
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  User,
-  Mail,
-  Calendar,
   Edit,
-  Save,
-  X,
-  FileText,
+  Calendar,
+  Mail,
   Eye,
   EyeOff,
+  FileText,
   Loader2,
 } from 'lucide-react';
 import api from '../api/axios';
+
+const DEFAULT_AVATAR =
+  'https://pfpzone.com/wp-content/uploads/2025/08/default-pfp-3.webp';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
-  // Edit form state
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     bio: '',
     avatarUrl: '',
   });
 
-  // Articles state
   const [articles, setArticles] = useState([]);
   const [articlesLoading, setArticlesLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('published'); // 'published' or 'drafts'
+  const [activeTab, setActiveTab] = useState('published');
 
+  /* ================= FETCH PROFILE ================= */
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchProfile = async () => {
       try {
-        const meResponse = await api.get('/auth/me');
-        const userId = meResponse.data.user.id;
-        setUserId(userId);
+        const meRes = await api.get('/auth/me');
+        const id = meRes.data.user.id;
+        setUserId(id);
 
-        const userResponse = await api.get(`/user/${userId}`);
-        setUser(userResponse.data);
+        const userRes = await api.get(`/user/${id}`);
+        setUser(userRes.data);
         setEditForm({
-          name: userResponse.data.name || '',
-          bio: userResponse.data.bio || '',
-          avatarUrl: userResponse.data.avatarUrl || '',
+          name: userRes.data.name || '',
+          bio: userRes.data.bio || '',
+          avatarUrl: userRes.data.avatarUrl || '',
         });
-      } catch (err) {
-        setError('Failed to fetch profile');
-        console.error(err);
+      } catch {
+        setError('Failed to load profile');
       } finally {
         setLoading(false);
       }
     };
-
-    fetchUserProfile();
+    fetchProfile();
   }, []);
 
+  /* ================= FETCH ARTICLES ================= */
   useEffect(() => {
-    if (userId) {
-      fetchArticles();
-    }
+    if (!userId) return;
+
+    const fetchArticles = async () => {
+      setArticlesLoading(true);
+      try {
+        const res = await api.get('/article/my-blogs');
+        setArticles(res.data || []);
+      } finally {
+        setArticlesLoading(false);
+      }
+    };
+
+    fetchArticles();
   }, [userId]);
 
-  const fetchArticles = async () => {
-    setArticlesLoading(true);
-    try {
-      const response = await api.get('/article/my-blogs');
-      setArticles(response.data || []);
-    } catch (err) {
-      console.error('Failed to fetch articles', err);
-    } finally {
-      setArticlesLoading(false);
-    }
-  };
-
+  /* ================= HANDLERS ================= */
   const handleEditToggle = () => {
-    if (isEditing) {
-      // Reset form if canceling
+    if (isEditing && user) {
       setEditForm({
         name: user.name || '',
         bio: user.bio || '',
@@ -90,315 +86,252 @@ const Profile = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const response = await api.put(`/user/${userId}`, editForm);
-      setUser(response.data.user);
-      setIsEditing(false);
-      setError('');
-    } catch (err) {
-      console.error('Failed to update profile', err);
-      setError('Failed to update profile. Please try again.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const publishedArticles = articles.filter((article) => article.isPublished);
-  const draftArticles = articles.filter((article) => !article.isPublished);
+  const handleSave = async () => {
+    if (!editForm.name.trim()) {
+      setError('Name cannot be empty');
+      return;
+    }
 
+    setSaving(true);
+    try {
+      const res = await api.put(`/user/${userId}`, editForm);
+      setUser(res.data.user);
+      setIsEditing(false);
+      setError('');
+    } catch {
+      setError('Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  /* ================= DERIVED ================= */
+  const publishedArticles = articles.filter((a) => a.isPublished);
+  const draftArticles = articles.filter((a) => !a.isPublished);
   const displayedArticles =
     activeTab === 'published' ? publishedArticles : draftArticles;
 
+  const joinDate = user
+    ? new Date(user.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+      })
+    : '';
+
+  /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div className='min-h-screen bg-gray-900 text-white flex items-center justify-center'>
-        <Loader2 className='animate-spin' size={36} />
-      </div>
-    );
-  }
-
-  if (error && !user) {
-    return (
-      <div className='min-h-screen bg-gray-900 text-white flex items-center justify-center'>
-        <p className='text-red-400'>{error}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-gray-500" size={32} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className='min-h-screen bg-gray-900 text-white flex items-center justify-center'>
-        <p>User not found</p>
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        User not found
       </div>
     );
   }
 
-  const joinDate = new Date(user.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-  });
-
   return (
-    <div className='min-h-screen bg-gray-900 text-gray-100 px-6 py-10'>
-      <div className='max-w-6xl mx-auto space-y-8'>
-        {/* Error message */}
-        {error && user && (
-          <div className='bg-red-900/30 border border-red-700 text-red-200 px-4 py-3 rounded-lg'>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
+
+        {error && (
+          <div className="border border-red-200 bg-red-50 text-red-600 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
-        {/* Profile Header */}
-        <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
-          <div className='flex items-start gap-6'>
-            {/* Avatar */}
-            <div className='flex-shrink-0'>
-              {isEditing ? (
-                <div className='space-y-2'>
-                  <img
-                    src={
-                      editForm.avatarUrl ||
-                      'https://pfpzone.com/wp-content/uploads/2025/08/default-pfp-3.webp'
-                    }
-                    alt='profile'
-                    className='w-28 h-28 rounded-full border border-gray-700 object-cover'
-                  />
-                  <input
-                    type='text'
-                    name='avatarUrl'
-                    value={editForm.avatarUrl}
-                    onChange={handleInputChange}
-                    placeholder='Avatar URL'
-                    className='w-28 px-2 py-1 text-xs bg-gray-700 border border-gray-600 rounded text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500'
-                  />
-                </div>
-              ) : (
-                <img
-                  src={
-                    user.avatarUrl ||
-                    'https://pfpzone.com/wp-content/uploads/2025/08/default-pfp-3.webp'
-                  }
-                  alt='profile'
-                  className='w-28 h-28 rounded-full border border-gray-700 object-cover'
-                />
-              )}
-            </div>
+        {/* ================= PROFILE HEADER ================= */}
+        <section className="flex gap-10">
+          <img
+            src={(isEditing ? editForm.avatarUrl : user.avatarUrl) || DEFAULT_AVATAR}
+            onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)}
+            className="w-28 h-28 rounded-full object-cover border"
+            alt="profile"
+          />
 
-            {/* User Info */}
-            <div className='flex-1'>
-              {isEditing ? (
-                <div className='space-y-3'>
-                  <input
-                    type='text'
-                    name='name'
-                    value={editForm.name}
-                    onChange={handleInputChange}
-                    placeholder='Your name'
-                    className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500'
-                  />
-                  <p className='text-gray-400'>@{user.username}</p>
-                </div>
-              ) : (
-                <>
-                  <h1 className='text-3xl font-semibold text-white'>
-                    {user.name}
-                  </h1>
-                  <p className='text-gray-400'>@{user.username}</p>
-                </>
-              )}
-            </div>
+          <div className="flex-1 space-y-6">
 
-            {/* Edit/Save Buttons */}
-            <div className='flex gap-2'>
+            {/* ACTION BAR */}
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-semibold text-gray-900">
+                  {user.name}
+                </h1>
+                <p className="text-gray-500">@{user.username}</p>
+              </div>
+
               {isEditing ? (
-                <>
+                <div className="flex gap-2">
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 px-4 py-2 rounded-md transition'>
-                    {saving ? (
-                      <Loader2 className='animate-spin' size={16} />
-                    ) : (
-                      <Save size={16} />
-                    )}
-                    Save
+                    className="px-4 py-2 text-sm rounded-full bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+                  >
+                    {saving ? 'Saving…' : 'Save'}
                   </button>
                   <button
                     onClick={handleEditToggle}
                     disabled={saving}
-                    className='flex items-center gap-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 px-4 py-2 rounded-md transition'>
-                    <X size={16} />
+                    className="px-4 py-2 text-sm rounded-full border hover:bg-gray-100"
+                  >
                     Cancel
                   </button>
-                </>
+                </div>
               ) : (
                 <button
                   onClick={handleEditToggle}
-                  className='flex items-center gap-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md transition'>
+                  className="flex items-center gap-2 px-4 py-2 text-sm rounded-full border bg-white hover:bg-gray-100"
+                >
                   <Edit size={16} />
-                  Edit Profile
+                  Edit profile
                 </button>
               )}
             </div>
-          </div>
 
-          {/* Bio Section */}
-          <div className='mt-6'>
+            {/* ================= EDIT FORM ================= */}
             {isEditing ? (
-              <div className='space-y-2'>
-                <label className='text-sm text-gray-400'>Bio</label>
-                <textarea
-                  name='bio'
-                  value={editForm.bio}
-                  onChange={handleInputChange}
-                  placeholder='Tell us about yourself...'
-                  rows={4}
-                  maxLength={500}
-                  className='w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none'
-                />
-                <p className='text-xs text-gray-500'>
-                  {editForm.bio.length}/500 characters
-                </p>
+              <div className="space-y-6 max-w-xl">
+
+                {/* NAME */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Display name
+                  </label>
+                  <input
+                    name="name"
+                    value={editForm.name}
+                    onChange={handleInputChange}
+                    placeholder="Your name"
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  />
+                </div>
+
+                {/* BIO */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bio
+                  </label>
+                  <textarea
+                    name="bio"
+                    value={editForm.bio}
+                    onChange={handleInputChange}
+                    rows={4}
+                    maxLength={500}
+                    placeholder="Tell people a little about yourself"
+                    className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {editForm.bio.length}/500 characters
+                  </p>
+                </div>
+
+                {/* AVATAR URL */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Avatar image URL
+                  </label>
+                  <input
+                    name="avatarUrl"
+                    value={editForm.avatarUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com/avatar.jpg"
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Paste a publicly accessible image URL
+                  </p>
+                </div>
               </div>
             ) : (
-              user.bio && (
-                <div>
-                  <h2 className='text-sm text-gray-400 mb-2'>About</h2>
-                  <p className='text-gray-300 leading-relaxed'>{user.bio}</p>
+              <>
+                {user.bio && (
+                  <p className="max-w-2xl text-gray-600 leading-relaxed">
+                    {user.bio}
+                  </p>
+                )}
+
+                <div className="flex items-center gap-6 text-sm text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Calendar size={14} />
+                    Joined {joinDate}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Mail size={14} />
+                    {user.email}
+                  </span>
                 </div>
-              )
+              </>
             )}
           </div>
-        </div>
+        </section>
 
-        {/* User Details Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-          <div className='bg-gray-800 p-5 rounded-lg space-y-2 border border-gray-700'>
-            <div className='flex items-center gap-2 text-gray-400'>
-              <User size={16} />
-              Username
-            </div>
-            <p className='text-lg font-medium text-gray-100'>{user.username}</p>
-          </div>
-
-          <div className='bg-gray-800 p-5 rounded-lg space-y-2 border border-gray-700'>
-            <div className='flex items-center gap-2 text-gray-400'>
-              <Mail size={16} />
-              Email
-            </div>
-            <p className='text-lg font-medium text-gray-100 break-all'>
-              {user.email}
-            </p>
-          </div>
-
-          <div className='bg-gray-800 p-5 rounded-lg space-y-2 border border-gray-700'>
-            <div className='flex items-center gap-2 text-gray-400'>
-              <Calendar size={16} />
-              Joined
-            </div>
-            <p className='text-lg font-medium text-gray-100'>{joinDate}</p>
-          </div>
-        </div>
-
-        {/* Articles Section */}
-        <div className='bg-gray-800 rounded-lg border border-gray-700 overflow-hidden'>
-          {/* Tabs */}
-          <div className='flex border-b border-gray-700'>
+        {/* ================= ARTICLES ================= */}
+        <section>
+          <div className="flex gap-8 border-b mb-6">
             <button
               onClick={() => setActiveTab('published')}
-              className={`flex-1 px-6 py-4 flex items-center justify-center gap-2 transition ${
+              className={`pb-3 text-sm font-medium flex items-center gap-2 ${
                 activeTab === 'published'
-                  ? 'bg-gray-700 text-white border-b-2 border-indigo-500'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-750'
-              }`}>
-              <Eye size={18} />
-              Published ({publishedArticles.length})
+                  ? 'text-gray-900 border-b-2 border-gray-900'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Eye size={16} />
+              Published
             </button>
             <button
               onClick={() => setActiveTab('drafts')}
-              className={`flex-1 px-6 py-4 flex items-center justify-center gap-2 transition ${
+              className={`pb-3 text-sm font-medium flex items-center gap-2 ${
                 activeTab === 'drafts'
-                  ? 'bg-gray-700 text-white border-b-2 border-indigo-500'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-750'
-              }`}>
-              <EyeOff size={18} />
-              Drafts ({draftArticles.length})
+                  ? 'text-gray-900 border-b-2 border-gray-900'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <EyeOff size={16} />
+              Drafts
             </button>
           </div>
 
-          {/* Articles List */}
-          <div className='p-6'>
-            {articlesLoading ? (
-              <div className='flex justify-center py-8'>
-                <Loader2 className='animate-spin text-gray-400' size={32} />
-              </div>
-            ) : displayedArticles.length === 0 ? (
-              <div className='text-center py-12'>
-                <FileText size={48} className='mx-auto text-gray-600 mb-3' />
-                <p className='text-gray-400'>
-                  No {activeTab === 'published' ? 'published' : 'draft'} articles
-                  yet
-                </p>
-              </div>
-            ) : (
-              <div className='space-y-4'>
-                {displayedArticles.map((article) => (
-                  <a
-                    key={article.slug}
-                    href={`/article/${article.slug}`}
-                    className='block p-4 bg-gray-750 hover:bg-gray-700 rounded-lg border border-gray-700 transition group'>
-                    <div className='flex items-start justify-between'>
-                      <div className='flex-1'>
-                        <h3 className='text-lg font-semibold text-white group-hover:text-indigo-400 transition'>
-                          {article.title}
-                        </h3>
-                        {article.subTitle && (
-                          <p className='text-sm text-gray-400 mt-1 line-clamp-2'>
-                            {article.subTitle}
-                          </p>
-                        )}
-                        <div className='flex items-center gap-4 mt-3 text-xs text-gray-500'>
-                          <span>
-                            {new Date(article.createdAt).toLocaleDateString(
-                              'en-US',
-                              {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                              }
-                            )}
-                          </span>
-                          {article.isPublished && (
-                            <span className='flex items-center gap-1'>
-                              ❤️ {article.likesCount || 0} likes
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className='ml-4'>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            article.isPublished
-                              ? 'bg-green-900/30 text-green-400 border border-green-700'
-                              : 'bg-yellow-900/30 text-yellow-400 border border-yellow-700'
-                          }`}>
-                          {article.isPublished ? 'Published' : 'Draft'}
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+          {articlesLoading ? (
+            <div className="py-20 flex justify-center">
+              <Loader2 className="animate-spin text-gray-400" size={28} />
+            </div>
+          ) : displayedArticles.length === 0 ? (
+            <div className="py-20 text-center text-gray-500">
+              <FileText size={40} className="mx-auto mb-3 opacity-40" />
+              No articles yet
+            </div>
+          ) : (
+            <div className="divide-y">
+              {displayedArticles.map((article) => (
+                <Link
+                  key={article.slug}
+                  to={`/article/${article.slug}`}
+                  className="block py-6 hover:bg-gray-50 transition"
+                >
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {article.title}
+                  </h3>
+                  {article.subTitle && (
+                    <p className="mt-2 text-gray-600 line-clamp-2">
+                      {article.subTitle}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
