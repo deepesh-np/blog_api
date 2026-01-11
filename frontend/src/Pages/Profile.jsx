@@ -110,6 +110,21 @@ const Profile = () => {
     }
   };
 
+
+  const handleTogglePublish = async (slug) => {
+    try {
+      const res = await api.patch(`/article/slug/${slug}/publish`);
+
+      setArticles((prev) =>
+        prev.map((a) =>
+          a.slug === slug ? { ...a, isPublished: res.data.isPublished } : a
+        )
+      );
+    } catch {
+      setError('Failed to publish article');
+    }
+  };
+
   /* ================= DERIVED ================= */
   const publishedArticles = articles.filter((a) => a.isPublished);
   const draftArticles = articles.filter((a) => !a.isPublished);
@@ -126,72 +141,70 @@ const Profile = () => {
   /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-gray-500" size={32} />
+      <div className='min-h-screen flex items-center justify-center'>
+        <Loader2 className='animate-spin text-gray-500' size={32} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className='min-h-screen flex items-center justify-center text-gray-500'>
         User not found
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
-
+    <div className='min-h-screen bg-gray-50'>
+      <div className='max-w-5xl mx-auto px-6 py-12 space-y-12'>
         {error && (
-          <div className="border border-red-200 bg-red-50 text-red-600 px-4 py-3 rounded-lg">
+          <div className='border border-red-200 bg-red-50 text-red-600 px-4 py-3 rounded-lg'>
             {error}
           </div>
         )}
 
         {/* ================= PROFILE HEADER ================= */}
-        <section className="flex gap-10">
+        <section className='flex gap-10'>
           <img
-            src={(isEditing ? editForm.avatarUrl : user.avatarUrl) || DEFAULT_AVATAR}
+            src={
+              (isEditing ? editForm.avatarUrl : user.avatarUrl) ||
+              DEFAULT_AVATAR
+            }
             onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)}
-            className="w-28 h-28 rounded-full object-cover border"
-            alt="profile"
+            className='w-28 h-28 rounded-full object-cover border'
+            alt='profile'
           />
 
-          <div className="flex-1 space-y-6">
-
+          <div className='flex-1 space-y-6'>
             {/* ACTION BAR */}
-            <div className="flex items-start justify-between">
+            <div className='flex items-start justify-between'>
               <div>
-                <h1 className="text-3xl font-semibold text-gray-900">
+                <h1 className='text-3xl font-semibold text-gray-900'>
                   {user.name}
                 </h1>
-                <p className="text-gray-500">@{user.username}</p>
+                <p className='text-gray-500'>@{user.username}</p>
               </div>
 
               {isEditing ? (
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="px-4 py-2 text-sm rounded-full bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
-                  >
+                    className='px-4 py-2 text-sm rounded-full bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50'>
                     {saving ? 'Saving…' : 'Save'}
                   </button>
                   <button
                     onClick={handleEditToggle}
                     disabled={saving}
-                    className="px-4 py-2 text-sm rounded-full border hover:bg-gray-100"
-                  >
+                    className='px-4 py-2 text-sm rounded-full border hover:bg-gray-100'>
                     Cancel
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={handleEditToggle}
-                  className="flex items-center gap-2 px-4 py-2 text-sm rounded-full border bg-white hover:bg-gray-100"
-                >
+                  className='flex items-center gap-2 px-4 py-2 text-sm rounded-full border bg-white hover:bg-gray-100'>
                   <Edit size={16} />
                   Edit profile
                 </button>
@@ -200,54 +213,53 @@ const Profile = () => {
 
             {/* ================= EDIT FORM ================= */}
             {isEditing ? (
-              <div className="space-y-6 max-w-xl">
-
+              <div className='space-y-6 max-w-xl'>
                 {/* NAME */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
                     Display name
                   </label>
                   <input
-                    name="name"
+                    name='name'
                     value={editForm.name}
                     onChange={handleInputChange}
-                    placeholder="Your name"
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    placeholder='Your name'
+                    className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900'
                   />
                 </div>
 
                 {/* BIO */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
                     Bio
                   </label>
                   <textarea
-                    name="bio"
+                    name='bio'
                     value={editForm.bio}
                     onChange={handleInputChange}
                     rows={4}
                     maxLength={500}
-                    placeholder="Tell people a little about yourself"
-                    className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    placeholder='Tell people a little about yourself'
+                    className='w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-900'
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className='text-xs text-gray-500 mt-1'>
                     {editForm.bio.length}/500 characters
                   </p>
                 </div>
 
                 {/* AVATAR URL */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
                     Avatar image URL
                   </label>
                   <input
-                    name="avatarUrl"
+                    name='avatarUrl'
                     value={editForm.avatarUrl}
                     onChange={handleInputChange}
-                    placeholder="https://example.com/avatar.jpg"
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    placeholder='https://example.com/avatar.jpg'
+                    className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900'
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className='text-xs text-gray-500 mt-1'>
                     Paste a publicly accessible image URL
                   </p>
                 </div>
@@ -255,17 +267,17 @@ const Profile = () => {
             ) : (
               <>
                 {user.bio && (
-                  <p className="max-w-2xl text-gray-600 leading-relaxed">
+                  <p className='max-w-2xl text-gray-600 leading-relaxed'>
                     {user.bio}
                   </p>
                 )}
 
-                <div className="flex items-center gap-6 text-sm text-gray-500">
-                  <span className="flex items-center gap-1">
+                <div className='flex items-center gap-6 text-sm text-gray-500'>
+                  <span className='flex items-center gap-1'>
                     <Calendar size={14} />
                     Joined {joinDate}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className='flex items-center gap-1'>
                     <Mail size={14} />
                     {user.email}
                   </span>
@@ -277,15 +289,14 @@ const Profile = () => {
 
         {/* ================= ARTICLES ================= */}
         <section>
-          <div className="flex gap-8 border-b mb-6">
+          <div className='flex gap-8 border-b mb-6'>
             <button
               onClick={() => setActiveTab('published')}
               className={`pb-3 text-sm font-medium flex items-center gap-2 ${
                 activeTab === 'published'
                   ? 'text-gray-900 border-b-2 border-gray-900'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
+              }`}>
               <Eye size={16} />
               Published
             </button>
@@ -295,40 +306,66 @@ const Profile = () => {
                 activeTab === 'drafts'
                   ? 'text-gray-900 border-b-2 border-gray-900'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
+              }`}>
               <EyeOff size={16} />
               Drafts
             </button>
           </div>
 
           {articlesLoading ? (
-            <div className="py-20 flex justify-center">
-              <Loader2 className="animate-spin text-gray-400" size={28} />
+            <div className='py-20 flex justify-center'>
+              <Loader2 className='animate-spin text-gray-400' size={28} />
             </div>
           ) : displayedArticles.length === 0 ? (
-            <div className="py-20 text-center text-gray-500">
-              <FileText size={40} className="mx-auto mb-3 opacity-40" />
+            <div className='py-20 text-center text-gray-500'>
+              <FileText size={40} className='mx-auto mb-3 opacity-40' />
               No articles yet
             </div>
           ) : (
-            <div className="divide-y">
-              {displayedArticles.map((article) => (
-                <Link
-                  key={article.slug}
-                  to={`/article/${article.slug}`}
-                  className="block py-6 hover:bg-gray-50 transition"
-                >
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {article.title}
-                  </h3>
-                  {article.subTitle && (
-                    <p className="mt-2 text-gray-600 line-clamp-2">
-                      {article.subTitle}
-                    </p>
-                  )}
-                </Link>
-              ))}
+            <div className='divide-y'>
+              {displayedArticles.map((article) => {
+                if (activeTab === 'published') {
+                  return (
+                    <Link
+                      key={article.slug}
+                      to={`/article/${article.slug}`}
+                      className='block py-6 hover:bg-gray-50 transition'>
+                      <h3 className='text-xl font-semibold text-gray-900'>
+                        {article.title}
+                      </h3>
+                      {article.subTitle && (
+                        <p className='mt-2 text-gray-600 line-clamp-2'>
+                          {article.subTitle}
+                        </p>
+                      )}
+                    </Link>
+                  );
+                }
+
+                // DRAFTS VIEW
+                return (
+                  <div
+                    key={article.slug}
+                    className='flex items-center justify-between py-6 hover:bg-gray-50 transition'>
+                    <div>
+                      <h3 className='text-xl font-semibold text-gray-900'>
+                        {article.title}
+                      </h3>
+                      {article.subTitle && (
+                        <p className='mt-2 text-gray-600 line-clamp-2'>
+                          {article.subTitle}
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => handleTogglePublish(article.slug)}
+                      className='ml-6 px-4 py-2 text-sm rounded-full bg-gray-900 text-white hover:bg-gray-800'>
+                      Publish
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>
