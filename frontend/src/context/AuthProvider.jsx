@@ -1,7 +1,7 @@
 /** @format */
-import { useEffect, useState } from "react";
-import api from "../api/axios";
-import { AuthContext } from "./AuthContext";
+import { useEffect, useState } from 'react';
+import api from '../api/axios';
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       // 1️⃣ verify auth + get user
-      const res = await api.get("/auth/me");
+      const res = await api.get('/auth/me');
 
       setIsAuth(true);
       setUser(res.data.user); // <-- SINGLE source of user truth
@@ -25,9 +25,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post('/auth/logout');
     } catch (err) {
-      console.warn("Logout request failed");
+      console.warn('Logout request failed');
     } finally {
       setIsAuth(false);
       setUser(null);
@@ -35,13 +35,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    checkAuth();
+    if (!isAuth && !loading) {
+      checkAuth();
+    }
   }, []);
-
+  
   return (
-    <AuthContext.Provider
-      value={{ isAuth, user, loading, checkAuth, logout }}
-    >
+    <AuthContext.Provider value={{ isAuth, user, loading, checkAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );
