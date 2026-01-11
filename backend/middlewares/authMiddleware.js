@@ -1,8 +1,8 @@
 /** @format */
 
 import { verifyToken } from '../services/jwtService.js';
-
-const authMiddleware = (req, res, next) => {
+import User from '../models/user.model.js'
+const authMiddleware = async(req, res, next) => {
   const token = req.cookies?.token;
 
 if (!token) {
@@ -17,7 +17,15 @@ if (!token) {
 
   try {
     const decoded = verifyToken(token);
-    req.user = decoded;
+    const user = await User.findById(decoded.id).select(
+      "_id name avatarUrl role"
+    );
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired token' });

@@ -19,11 +19,13 @@ router.get("/profile", authMiddleware, authController.profile);
 router.post('/logout', authController.logout);
 
 router.get("/me", authMiddleware, (req, res) => {
+  // console.log("in /me")
   res.json({
     authenticated: true,
     user: {
       id: req.user.id,
       name: req.user.name,
+      avatarUrl: req.user.avatarUrl,
     },
   });
 });

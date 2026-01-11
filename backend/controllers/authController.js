@@ -58,6 +58,7 @@ export const login = async (req, res) => {
         httpOnly: true,
         sameSite: 'strict',
         secure: process.env.NODE_ENV === 'production',
+        path: '/',
       })
       .json({ message: 'Login successful' });
   } catch (err) {
@@ -105,6 +106,7 @@ export const logout = (req, res) => {
       httpOnly: true,
       sameSite: 'strict',
       secure: process.env.NODE_ENV === 'production',
+      path: '/',
     })
     .status(200)
     .json({ message: 'Logged out successfully' });

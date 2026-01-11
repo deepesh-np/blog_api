@@ -6,51 +6,25 @@ import { Bell, User, PenLine, Home, Search } from 'lucide-react';
 import { UserPlus, LogOut } from 'lucide-react';
 import React from 'react';
 import api from '../api/axios';
-
-import { useAuth } from '../hooks/useAuth';
-
+import { useAuth } from '../context/AuthContext';
 const navLinkClasses =
-  'text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2';
+'text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2';
 
 export default function Navbar() {
+  // if (loadings) return null;
   const navigate = useNavigate();
-  const { isAuth, checkAuth } = useAuth();
+  const { isAuth, logout, user} = useAuth();
   const [query, setQuery] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [userAvatar, setUserAvatar] = React.useState(null);
 
   const debounceRef = React.useRef(null);
 
-  // Fetch user avatar when authenticated
-  React.useEffect(() => {
-    const fetchUserAvatar = async () => {
-      if (isAuth) {
-        try {
-          const meResponse = await api.get('/auth/me');
-          const userId = meResponse.data.user.id;
-          const avatarResponse = await api.get(`/user/${userId}/avatar`);
-          setUserAvatar(avatarResponse.data.avatarUrl);
-        } catch (err) {
-          console.error('Failed to fetch user avatar', err);
-        }
-      } else {
-        setUserAvatar(null);
-      }
-    };
-
-    fetchUserAvatar();
-  }, [isAuth]);
+  const userAvatar = user?.avatarUrl;
 
   const handleLogout = async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch (err) {
-      console.warn('Logout failed, forcing redirect');
-    } finally {
-      await checkAuth();
-      navigate('/logout');
-    }
+    await logout();
+    navigate('/');
   };
 
   const handleSearch = (value) => {
@@ -197,7 +171,7 @@ export default function Navbar() {
             ) : (
               ''
             )}
-            
+
             {isAuth ? (
               <button
                 onClick={handleLogout}
