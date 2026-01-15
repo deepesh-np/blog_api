@@ -1,3 +1,4 @@
+
 import redisClient from "../util/redisClient.js";
 
 export const cacheService = {
@@ -7,11 +8,10 @@ export const cacheService = {
   },
 
   async set(key, value, ttl = 60) {
-    await redisClient.set(
+    await redisClient.setEx(
       key,
-      JSON.stringify(value),
-      "EX",
-      ttl
+      ttl,
+      JSON.stringify(value)
     );
   },
 
