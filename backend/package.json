@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
     "nodemailer": "^7.0.12",
+    "redis": "^5.10.0",
     "slugify": "^1.6.6"
   },
   "devDependencies": {

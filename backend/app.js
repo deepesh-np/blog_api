@@ -4,7 +4,7 @@ import userprofileRoutes from './routes/userprofileRoutes.js'
 import express from 'express';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-
+import redisClient from "./util/redisClient.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -23,6 +23,18 @@ app.use(cors({
 //Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cookieParser());
+
+const startServer = async () => {
+  try {
+    await redisClient.connect(); // ✅ THIS FIXES YOUR ERROR
+    console.log("Redis connected");
+  } catch (err) {
+    console.error("Startup failed:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 //Mount auth routes
 // All auth-related routes will start with /api/auth
