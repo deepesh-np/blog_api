@@ -23,8 +23,16 @@ router.get(
 //get article by id
 router.get(
   "/slug/:slug",
+  cacheMiddleware({
+    key: (req) => `article:${req.params.slug}`,
+    ttl: 120,
+  }),
   articleController.getArticlesBySlug
-)
+
+);
+// router.get(
+//   "/slug/:slug",
+// )
 
 //auth guards routess!!!!b  --ye sb me authorize lga hua h..
 //delete article by id 
@@ -54,8 +62,14 @@ router.get(
 
 router.get(
   "/my-blogs",
+  // "/articles/me",
   auth,
+  cacheMiddleware({
+    key: (req) => `articles:user:${req.user.id}`,
+    ttl: 60,
+  }),
   articleController.getMyArticles
+  // getMyArticles
 );
 
 
