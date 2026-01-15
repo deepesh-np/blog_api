@@ -1,5 +1,5 @@
 import Article from '../models/article.model.js';
-import redisClient from '../util/redisClient.js'
+// import redisClient from '../util/redisClient.js'
 import { generateUniqueSlug } from "../services/slugService.js";
 
 export const createArticle = async (req, res) => {
@@ -103,30 +103,14 @@ export const editArticleBySlug = async (req, res) => {
 };
 
 export const getPublishedArticles = async (req, res) => {
-  const CACHE_KEY = "articles:published";
-
   try {
-    const cachedArticles = await redisClient.get(CACHE_KEY);
-
-    if (cachedArticles) {
-      return res.status(200).json(JSON.parse(cachedArticles));
-    }
-
-    const articles = await Article.find({ isPublished: true })
-      .populate("author", "username avatarUrl")
+    const articles = await Article.find({ isPublished: true })   
+      .populate("author", "username avatarUrl")         
       .sort({ createdAt: -1 })
       .select("title subTitle slug author createdAt likesCount");
 
-    // Store in Redis (TTL = 60 seconds)
-    await redisClient.setEx(
-      CACHE_KEY,
-      60,
-      JSON.stringify(articles)
-    );
-
     res.status(200).json(articles);
   } catch (err) {
-    console.error("getPublishedArticles error:", err);
     res.status(500).json({ message: "Failed to fetch published articles" });
   }
 };

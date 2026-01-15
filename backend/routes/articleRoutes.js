@@ -2,6 +2,7 @@ import express from "express"
 import articleController from "../controllers/articleController.js"
 import authorize from "../middlewares/authorizeMiddlewaare.js"
 import auth from '../middlewares/authMiddleware.js'
+import { cacheMiddleware } from "../middlewares/cache.js"
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ router.put(
 
 router.get(
   "/published",
+  cacheMiddleware({
+    key: "articles:published",
+    ttl: 60,
+  }),
   articleController.getPublishedArticles
 );
 
