@@ -1,6 +1,11 @@
 import Article from '../models/article.model.js';
 // import redisClient from '../util/redisClient.js'
 import { generateUniqueSlug } from "../services/slugService.js";
+import { cacheService } from "../services/cacheService.js";
+
+// await cacheService.del("articles:all");
+// await cacheService.delByPattern("article:*");
+// await cacheService.delByPattern("articles:user:*");
 
 export const createArticle = async (req, res) => {
   const { title, bodyMarkdown, subTitle } = req.body;
@@ -16,6 +21,7 @@ export const createArticle = async (req, res) => {
   });
 
   res.status(201).json(article);
+  await cacheService.del("articles:published");
 };
 
 export const getAllArticles = async (req, res) => {
