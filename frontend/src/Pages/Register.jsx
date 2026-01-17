@@ -1,25 +1,27 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios";
+/** @format */
+
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [name, setName] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      const res = await api.post("/auth/register", {
+      const res = await api.post('/auth/register', {
         name,
         username,
         email,
@@ -27,21 +29,20 @@ const Register = () => {
       });
 
       if (res?.data?.token) {
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem('token', res.data.token);
       }
 
-      navigate("/login");
+      navigate('/login');
     } catch (err) {
-      setError(err?.response?.data?.message || "Registration failed");
+      setError(err?.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-lg border border-gray-200">
-
+    <div className="min-h-screen flex items-center justify-center bg-bg px-6">
+      <div className="w-full max-w-sm rounded-xl bg-surface p-8 shadow-lg border border-border">
         {/* Header */}
         <div className="text-center">
           <img
@@ -50,20 +51,19 @@ const Register = () => {
             className="mx-auto h-10 w-auto"
           />
 
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">
+          <h2 className="mt-6 text-2xl font-bold text-text">
             Create your account
           </h2>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-text/60">
             Join us — it only takes a minute.
           </p>
         </div>
 
         {/* Form */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-text">
               Full Name
             </label>
             <input
@@ -71,14 +71,13 @@ const Register = () => {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text placeholder-text/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none"
               placeholder="John Doe"
             />
           </div>
 
-          {/* Username */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-text">
               Username
             </label>
             <input
@@ -86,14 +85,13 @@ const Register = () => {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text placeholder-text/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none"
               placeholder="johndoe123"
             />
           </div>
 
-          {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-text">
               Email
             </label>
             <input
@@ -101,14 +99,13 @@ const Register = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text placeholder-text/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none"
               placeholder="you@example.com"
             />
           </div>
 
-          {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-text">
               Password
             </label>
             <input
@@ -116,31 +113,29 @@ const Register = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text placeholder-text/40 focus:border-primary focus:ring-2 focus:ring-primary/30 focus:outline-none"
               placeholder="••••••••"
             />
           </div>
 
-          {/* Error */}
           {error && (
             <div className="text-red-500 text-sm">{error}</div>
           )}
 
-          {/* Button */}
           <button
             type="submit"
-            className="w-full rounded-md bg-indigo-600 py-2.5 font-semibold text-white hover:bg-indigo-500 transition focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={loading}
+            className="w-full rounded-md bg-primary py-2.5 font-semibold text-white hover:bg-primary/90 transition focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? 'Creating account…' : 'Create Account'}
           </button>
         </form>
 
-        {/* Footer */}
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{" "}
+        <p className="mt-6 text-center text-sm text-text/70">
+          Already have an account?{' '}
           <Link
             to="/login"
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
+            className="font-semibold text-primary hover:text-primary/80"
           >
             Sign in
           </Link>

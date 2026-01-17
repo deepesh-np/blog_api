@@ -36,8 +36,8 @@ const Login = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-6'>
-      <div className='w-full max-w-md rounded-2xl bg-white p-8 shadow-md border border-gray-200'>
+    <div className='min-h-screen bg-bg flex items-center justify-center px-6'>
+      <div className='w-full max-w-md rounded-2xl bg-surface p-8 shadow-md border border-border'>
         {/* Logo + Title */}
         <div className='text-center'>
           <img
@@ -46,11 +46,11 @@ const Login = () => {
             className='mx-auto h-10 w-auto'
           />
 
-          <h2 className='mt-6 text-2xl font-semibold text-gray-900'>
+          <h2 className='mt-6 text-2xl font-semibold text-text'>
             Sign in to your account
           </h2>
 
-          <p className='mt-2 text-sm text-gray-500'>
+          <p className='mt-2 text-sm text-text/60'>
             Welcome back — continue where you left off
           </p>
         </div>
@@ -59,12 +59,12 @@ const Login = () => {
         <form className='mt-8 space-y-5' onSubmit={handleSubmit}>
           {/* Email */}
           <div>
-            <label className='block text-sm font-medium text-gray-700'>
+            <label className='block text-sm font-medium text-text'>
               Email address
             </label>
 
-            <div className='mt-2 flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3'>
-              <Mail size={16} className='text-gray-400' />
+            <div className='mt-2 flex items-center gap-2 rounded-lg border border-border bg-surface px-3'>
+              <Mail size={16} className='text-text/40' />
               <input
                 id='email'
                 type='email'
@@ -72,7 +72,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder='you@example.com'
-                className='w-full py-2 text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none'
+                className='w-full py-2 text-text placeholder-text/40 bg-transparent focus:outline-none'
               />
             </div>
           </div>
@@ -80,19 +80,19 @@ const Login = () => {
           {/* Password */}
           <div>
             <div className='flex items-center justify-between'>
-              <label className='block text-sm font-medium text-gray-700'>
+              <label className='block text-sm font-medium text-text'>
                 Password
               </label>
 
               <a
                 href='#'
-                className='text-sm font-medium text-indigo-600 hover:text-indigo-500'>
+                className='text-sm font-medium text-primary hover:text-primary/80'>
                 Forgot?
               </a>
             </div>
 
-            <div className='mt-2 flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3'>
-              <Lock size={16} className='text-gray-400' />
+            <div className='mt-2 flex items-center gap-2 rounded-lg border border-border bg-surface px-3'>
+              <Lock size={16} className='text-text/40' />
               <input
                 id='password'
                 type='password'
@@ -100,7 +100,7 @@ const Login = () => {
                 value={password}
                 placeholder='••••••••'
                 onChange={(e) => setPassword(e.target.value)}
-                className='w-full py-2 text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none'
+                className='w-full py-2 text-text placeholder-text/40 bg-transparent focus:outline-none'
               />
             </div>
           </div>
@@ -116,11 +116,11 @@ const Login = () => {
           <button
             disabled={loading}
             type='submit'
-            className={`w-full rounded-lg bg-indigo-600 py-2.5 font-semibold text-white transition
+            className={`w-full rounded-lg bg-primary py-2.5 font-semibold text-white transition
               ${
                 loading
                   ? 'opacity-60 cursor-not-allowed'
-                  : 'hover:bg-indigo-500 active:bg-indigo-700'
+                  : 'hover:bg-primary/90 active:bg-primary/80'
               }
             `}>
             {loading ? 'Signing in...' : 'Sign In'}
@@ -128,11 +128,11 @@ const Login = () => {
         </form>
 
         {/* Footer */}
-        <p className='mt-6 text-center text-sm text-gray-600'>
-          Don’t have an account?{' '}
+        <p className='mt-6 text-center text-sm text-text/70'>
+          Don't have an account?{' '}
           <Link
             to='/register'
-            className='font-semibold text-indigo-600 hover:text-indigo-500'>
+            className='font-semibold text-primary hover:text-primary/80'>
             Sign up
           </Link>
         </p>
