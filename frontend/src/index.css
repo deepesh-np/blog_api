@@ -1,2 +1,33 @@
-@import "tailwindcss";
+/** @format */
+
+@import 'tailwindcss';
 @plugin "@tailwindcss/typography";
+
+@layer base {
+  :root,
+  [data-theme='light'],
+  body[data-theme='light'] {
+    --bg: 255 255 255;
+    --surface: 243 244 246;
+    --text: 17 17 17;
+    --border: 209 213 219;
+    --primary: 37 99 235;
+  }
+
+  [data-theme='dark'],
+  body[data-theme='dark'] {
+    --bg: 15 23 42;
+    --surface: 30 41 59;
+    --text: 229 231 235;
+    --border: 71 85 105;
+    --primary: 56 189 248;
+  }
+}
+
+@theme {
+  --color-bg: rgb(var(--bg) / <alpha-value>);
+  --color-surface: rgb(var(--surface) / <alpha-value>);
+  --color-text: rgb(var(--text) / <alpha-value>);
+  --color-border: rgb(var(--border) / <alpha-value>);
+  --color-primary: rgb(var(--primary) / <alpha-value>);
+}
