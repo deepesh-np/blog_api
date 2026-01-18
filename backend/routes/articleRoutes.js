@@ -1,5 +1,6 @@
 import express from "express"
 import articleController from "../controllers/articleController.js"
+import commentController from "../controllers/commentController.js"
 import authorize from "../middlewares/authorizeMiddlewaare.js"
 import auth from '../middlewares/authMiddleware.js'
 import { cacheMiddleware } from "../middlewares/cache.js"
@@ -50,6 +51,10 @@ router.put(
   authorize.isOwner,
   articleController.editArticleBySlug
 )
+
+router.get('/slug/:slug/comments', commentController.getComments);
+
+router.post('/slug/:slug/comments', auth, commentController.createComment);
 
 router.get(
   "/published",
