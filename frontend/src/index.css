@@ -2,7 +2,7 @@
 
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
-
+/* 
 @layer base {
   :root,
   [data-theme='light'],
@@ -30,4 +30,4 @@
   --color-text: rgb(var(--text) / <alpha-value>);
   --color-border: rgb(var(--border) / <alpha-value>);
   --color-primary: rgb(var(--primary) / <alpha-value>);
-}
+} */

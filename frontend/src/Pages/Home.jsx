@@ -39,11 +39,11 @@ const Home = () => {
       <div className='mx-auto max-w-7xl px-6 lg:px-8'>
         {/* heading */}
         <div className='mx-auto max-w-2xl lg:mx-0'>
-          <h2 className='text-4xl font-bold tracking-tight text-text sm:text-5xl'>
+          <h2 className='text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl'>
             Published Blogs
           </h2>
 
-          <p className='mt-2 text-lg text-text/70'>
+          <p className='mt-2 text-lg text-gray-600'>
             Latest posts from our writers.
           </p>
         </div>
@@ -51,37 +51,37 @@ const Home = () => {
         {/* grid */}
         <div
           className='mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-x-10 gap-y-14 
-          border-t border-border pt-10 sm:mt-16 sm:pt-16 
+          border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 
           lg:mx-0 lg:max-w-none lg:grid-cols-3'>
           {articles.length === 0 && (
-            <p className='text-text/60'>No published articles yet.</p>
+            <p className='text-gray-600'>No published articles yet.</p>
           )}
 
           {articles.map((article) => (
             <article
               key={article.slug}
-              className='flex max-w-xl flex-col rounded-2xl border border-border bg-surface shadow-sm hover:shadow-md transition p-6'>
+              className='flex max-w-xl flex-col rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition p-6'>
               {/* date + tag */}
               <div className='flex items-center gap-x-4 text-xs'>
-                <time className='text-text/60'>
+                <time className='text-gray-500'>
                   {article.createdAt ? article.createdAt.slice(0, 10) : '—'}
                 </time>
 
-                <span className='rounded-full bg-primary/20 px-3 py-1.5 text-primary font-medium'>
+                <span className='rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700 font-medium'>
                   Blog
                 </span>
               </div>
 
               {/* title + desc */}
               <div className='group relative grow'>
-                <h3 className='mt-3 text-lg font-semibold text-text group-hover:text-primary'>
+                <h3 className='mt-3 text-lg font-semibold text-gray-900 group-hover:text-indigo-700'>
                   <a href={`/article/${article.slug}`}>
                     <span className='absolute inset-0' />
                     {article.title}
                   </a>
                 </h3>
 
-                <p className='mt-4 line-clamp-3 text-sm text-text/60'>
+                <p className='mt-4 line-clamp-3 text-sm text-gray-600'>
                   {article.subTitle || ''}
                 </p>
               </div>
@@ -94,15 +94,15 @@ const Home = () => {
                     'https://pfpzone.com/wp-content/uploads/2025/08/default-pfp-3.webp'
                   }
                   alt={article?.author?.username || 'Author'}
-                  className='h-10 w-10 rounded-full bg-border object-cover'
+                  className='h-10 w-10 rounded-full bg-gray-200 object-cover'
                 />
 
                 <div className='text-sm'>
-                  <p className='font-semibold text-text'>
+                  <p className='font-semibold text-gray-900'>
                     {article?.author?.username || 'Unknown author'}
                   </p>
 
-                  <p className='text-text/60 flex items-center gap-1'>
+                  <p className='text-gray-600 flex items-center gap-1'>
                     <Heart className='h-4 w-4 text-pink-500' />
                     {article.likesCount ?? 0} likes
                   </p>
