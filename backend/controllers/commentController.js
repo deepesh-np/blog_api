@@ -44,3 +44,8 @@ export const createComment = async (req, res) => {
     res.status(500).json({ message: "Failed to create comment" });
   }
 };
+
+export default {
+  createComment,
+  getComments
+}
