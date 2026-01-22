@@ -7,7 +7,7 @@ useEffect is used for side effects like API calls.
 """
 
 response = ollama.chat(
-    model="llama3",
+    model="phi",
     messages=[
         {
             "role": "user",

@@ -24,7 +24,7 @@ class RAG:
         context = "\n".join([self.chunks[i] for i in idx[0]])
 
         response = ollama.chat(
-            model="llama3",
+            model="phi",
             messages=[{
                 "role": "user",
                 "content": f"""
