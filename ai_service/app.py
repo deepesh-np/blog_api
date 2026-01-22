@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from rag import RAG
 
 app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
 rag = RAG()
 
 @app.post("/ingest")
