@@ -228,6 +228,40 @@ export const searchArticles = async (req, res) => {
 
 
 
+export const summarizeArticle = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const article = await Article.findOne({ slug });
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    if (article.summary) {
+      return res.json({ summary: article.summary });
+    }
+
+    const response = await fetch("http://localhost:8000/summarize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: article.bodyMarkdown }),
+    });
+
+    if (!response.ok) {
+      throw new Error("AI Service failed");
+    }
+
+    const data = await response.json();
+    article.summary = data.summary;
+    await article.save();
+
+    res.json({ summary: article.summary });
+  } catch (err) {
+    console.error("Summarization failed:", err);
+    res.status(500).json({ message: "Failed to generate summary" });
+  }
+};
+
 export default {
   createArticle,
   getAllArticles,
@@ -239,5 +273,6 @@ export default {
   togglePublish,
   likeArticle,
   incrementViews,
-  searchArticles
+  searchArticles,
+  summarizeArticle
 }

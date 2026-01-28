@@ -13,6 +13,11 @@ const articleSchema = new mongoose.Schema(
       trim: true,
     },
 
+    summary: {
+      type: String,
+      trim: true,
+    },
+
     slug: {
       type: String,
       required: true,
