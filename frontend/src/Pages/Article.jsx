@@ -17,7 +17,7 @@ const Article = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await api.get(`/article/slug/${slug}`);
+        const res = await api.get(`/article/${slug}`);
         setArticle(res.data);
       } catch (err) {
         setError('Article not found');
