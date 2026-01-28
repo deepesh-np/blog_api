@@ -11,7 +11,6 @@ const SuggestedArticles = ({ currentSlug }) => {
     const fetchArticles = async () => {
       try {
         const res = await api.get('/article/published');
-        // Filter out current article and limit to 5 suggestions
         const filtered = res.data
           .filter((a) => a.slug !== currentSlug)
           .slice(0, 5);
@@ -36,7 +35,7 @@ const SuggestedArticles = ({ currentSlug }) => {
         {articles.map((article) => (
           <Link 
             key={article.slug} 
-            to={`/article/slug/${article.slug}`}
+            to={`/article/${article.slug}`}
             className="group block"
           >
             <h4 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors mb-2 line-clamp-2">

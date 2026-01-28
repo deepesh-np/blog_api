@@ -54,7 +54,6 @@ const CommentSection = ({ slug }) => {
         Comments ({comments.length})
       </h3>
 
-      {/* Comment Form */}
       <div className="mb-10">
         {isAuth ? (
           <form onSubmit={handleSubmit} className="relative">
