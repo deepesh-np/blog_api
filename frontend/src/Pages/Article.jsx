@@ -2,7 +2,7 @@
 
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, User, Sparkles } from 'lucide-react';
 import api from '../api/axios';
 import MarkdownPreview from '../Components/MarkdownPreview';
 import CommentSection from '../Components/CommentSection';
@@ -81,6 +81,7 @@ const Article = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
+<<<<<<< HEAD
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12 mb-8 transition-shadow hover:shadow-md">
               <header className='mb-10 pb-10 border-b border-gray-100'>
                 <div className="flex items-center gap-3 text-sm font-medium text-indigo-600 mb-4">
@@ -90,6 +91,12 @@ const Article = () => {
                 </div>
                 
                 <h1 className='text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight'>
+=======
+            <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
+              <header className='mb-8 border-b pb-8'>
+
+                <h1 className='text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight'>
+>>>>>>> 2a9a7b5 (feat: implement AI-powered article summarization by adding a summary field, API endpoint, AI service integration, and frontend UI.)
                   {article.title}
                 </h1>
 
@@ -99,6 +106,7 @@ const Article = () => {
                    </p>
                 )}
 
+<<<<<<< HEAD
                 <div className='flex items-center gap-4'>
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md">
                     {article.author?.avatarUrl ? (
@@ -106,6 +114,56 @@ const Article = () => {
                     ) : (
                       <User size={24} />
                     )}
+=======
+                <div className="mb-8">
+                  {article.summary ? (
+                    <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-6">
+                      <div className="flex items-center gap-2 text-indigo-700 font-semibold mb-2">
+                        <Sparkles size={20} />
+                        <h3>AI Summary</h3>
+                      </div>
+                      <p className="text-indigo-900 leading-relaxed">
+                        {article.summary}
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const btn = document.getElementById('summarize-btn');
+                          if(btn) {
+                             btn.disabled = true;
+                             btn.innerText = 'Generating Summary...';
+                          }
+                          
+                          const res = await api.post(`/article/slug/${slug}/summarize`);
+                          setArticle({ ...article, summary: res.data.summary });
+                        } catch (err) {
+                          console.error("Failed to summarize", err);
+                          alert("Failed to generate summary. Please ensure you are logged in.");
+                          const btn = document.getElementById('summarize-btn');
+                          if(btn) {
+                             btn.disabled = false;
+                             btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg> Summarize with AI';
+                          }
+                        }
+                      }}
+                      id="summarize-btn"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-medium hover:bg-indigo-200 transition-colors"
+                    >
+                      <Sparkles size={16} />
+                      Summarize with AI
+                    </button>
+                  )}
+                </div>
+
+                <div className='flex items-center gap-6 text-gray-600'>
+                  <div className='flex items-center gap-2'>
+                    <User size={18} />
+                    <span className='font-medium'>
+                      {article.author?.name || 'Anonymous'}
+                    </span>
+>>>>>>> 2a9a7b5 (feat: implement AI-powered article summarization by adding a summary field, API endpoint, AI service integration, and frontend UI.)
                   </div>
                   <div>
                     <p className='font-bold text-gray-900 text-lg'>

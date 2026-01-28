@@ -101,6 +101,12 @@ router.get(
   articleController.searchArticles
 );
 
+router.post(
+  "/slug/:slug/summarize",
+  auth,
+  articleController.summarizeArticle
+);
+
 
 export default router;
 
