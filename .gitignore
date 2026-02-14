@@ -3,3 +3,5 @@ backend/package-lock.json
 backend/node_modules/
 frontend/package-lock.json
 .vscode
+package-lock.json
+node_modules
