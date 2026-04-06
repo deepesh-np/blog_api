@@ -3,6 +3,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './Components/Navbar.jsx';
+import LandingPage from './Pages/LandingPage.jsx';
 import Home from './Pages/Home.jsx';
 import Login from './Pages/Login.jsx';
 import Register from './Pages/Register.jsx';
@@ -15,10 +16,11 @@ import ProtectedRoute from './Components/ProtectedRoute.jsx';
 
 const App = () => {
   return (
-    <div className='bg-bg text-text min-h-screen transition-colors duration-200'>
+    <div className='bg-surface text-on-surface min-h-screen transition-colors duration-200'>
       <Navbar />
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/blog' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/logout' element={<Login />} />
         <Route path='/register' element={<Register />} />

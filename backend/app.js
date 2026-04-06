@@ -1,3 +1,5 @@
+import dns from 'dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 import authRoutes from "./routes/auth.js";
 import articleRoutes from './routes/articleRoutes.js'
 import userprofileRoutes from './routes/userprofileRoutes.js'
